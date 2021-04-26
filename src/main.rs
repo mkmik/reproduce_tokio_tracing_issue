@@ -21,6 +21,20 @@ pub fn init_simple_logs(log_verbose_count: u8) -> DefaultGuard {
     tracing_guard
 }
 
+pub fn init_global_logs(log_verbose_count: u8) {
+    let log_layer_filter = match log_verbose_count {
+        0 => EnvFilter::try_new("warn").unwrap(),
+        1 => EnvFilter::try_new("info").unwrap(),
+        2 => EnvFilter::try_new("debug").unwrap(),
+        _ => EnvFilter::try_new("trace").unwrap(),
+    };
+    let subscriber = tracing_subscriber::Registry::default()
+        .with(log_layer_filter)
+        .with(fmt::layer());
+
+    tracing::subscriber::set_global_default(subscriber).unwrap();
+}
+
 async fn foo(n: &str) {
     println!("in foo({}) async: a println log", n);
     error!("in foo({}) async: an error log", n);
@@ -32,6 +46,8 @@ async fn foo(n: &str) {
 
 fn main() {
     let _tracing_guard = init_simple_logs(2);
+    // this works:
+    // init_global_logs(2);
 
     println!("Hello, world!");
     error!("an error log");
@@ -47,7 +63,10 @@ fn main() {
         println!("in main async after await: a println log");
         error!("in main async after await: an error log");
 
+        println!("--------------------- logging is broken below:");
         tokio::spawn(async {
+            println!("Spawning in {:?}", std::thread::current().id());
+
             println!("in task async: a println log");
             error!("in task async: an error log");
 
@@ -58,6 +77,8 @@ fn main() {
         .await
         .unwrap();
 
-        println!("in async: done");
+        println!("--------------------- logging works here");
+        error!("in main async: done");
+        println!("in main async: done");
     });
 }

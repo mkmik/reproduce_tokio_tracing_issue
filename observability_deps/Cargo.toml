@@ -7,6 +7,6 @@ description = "Observability ecosystem dependencies for InfluxDB IOx, to ensure 
 
 [dependencies] # In alphabetical order
 # env_logger = "0.8.3"
-tracing = { version = "0.1", features = ["release_max_level_debug"] }
-tracing-futures = "0.2.4"
-tracing-subscriber = { version = "0.2.15", features = ["parking_lot"] }
+tracing = { version = "0.1", features = ["release_max_level_debug", "async-await"] }
+tracing-futures = { version = "0.2.4", features = [ "tokio-executor", "futures-task", "tokio", "futures"] }
+tracing-subscriber = { version = "0.2.15", default-features= false, features = ["parking_lot", "fmt", "env-filter"] }
