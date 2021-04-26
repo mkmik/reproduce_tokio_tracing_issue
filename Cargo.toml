@@ -11,4 +11,4 @@ members = [ "observability_deps" ]
 
 [dependencies]
 observability_deps = { path = "observability_deps" }
-tokio = { version = "1.0", features = ["rt-multi-thread"]}
+tokio = { version = "1.0", features = ["rt-multi-thread", "time"]}
