@@ -7,4 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-observability_deps = { path = "/Users/mkm/Projects/w/iox/observability_deps" }
+observability_deps = { git = "ssh://git@github.com/influxdata/influxdb_iox.git", rev = "078c0f3fdaea358e633e0993937eae790b36315a" }
+tokio = { version = "1.0", features = ["rt-multi-thread"]}
