@@ -367,7 +367,6 @@ dependencies = [
 [[package]]
 name = "observability_deps"
 version = "0.1.0"
-source = "git+ssh://git@github.com/influxdata/influxdb_iox.git?rev=078c0f3fdaea358e633e0993937eae790b36315a#078c0f3fdaea358e633e0993937eae790b36315a"
 dependencies = [
  "env_logger",
  "opentelemetry",
