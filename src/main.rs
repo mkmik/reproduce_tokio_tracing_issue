@@ -2,7 +2,8 @@ use observability_deps::{
     tracing::{self, dispatcher::DefaultGuard, error},
     tracing_subscriber::{self, fmt, layer::SubscriberExt, EnvFilter},
 };
-use tokio::runtime::Runtime;
+use tokio::runtime::Builder;
+use tokio::time::{sleep, Duration};
 
 pub fn init_simple_logs(log_verbose_count: u8) -> DefaultGuard {
     let log_layer_filter = match log_verbose_count {
@@ -23,6 +24,9 @@ pub fn init_simple_logs(log_verbose_count: u8) -> DefaultGuard {
 async fn foo(n: &str) {
     println!("in foo({}) async: a println log", n);
     error!("in foo({}) async: an error log", n);
+    sleep(Duration::from_millis(100)).await;
+    println!("in foo({}) async: a println log after sleep", n);
+    error!("in foo({}) async: an error log after sleep", n);
     println!("in foo({}) async: done", n);
 }
 
@@ -32,12 +36,16 @@ fn main() {
     println!("Hello, world!");
     error!("an error log");
 
-    let tokio_runtime = Runtime::new().unwrap();
+    // let tokio_runtime = Runtime::new().unwrap();
+    let tokio_runtime = Builder::new_multi_thread().enable_all().build().unwrap();
+    // let tokio_runtime = Builder::new_current_thread().enable_all().build().unwrap();
     tokio_runtime.block_on(async {
         println!("in main async: a println log");
         error!("in main async: an error log");
 
         foo("from main").await;
+        println!("in main async after await: a println log");
+        error!("in main async after await: an error log");
 
         tokio::spawn(async {
             println!("in task async: a println log");
